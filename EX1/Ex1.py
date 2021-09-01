@@ -7,33 +7,62 @@ Created on Tue Aug 31 09:42:40 2021
 """
 
 import pandas as pd
+import numpy as np
+
 #Exercise 1
 vines = pd.read_csv("winemag-data-130k-v2.csv") 
- #step 1
+
+#step 1
 prosecco = vines.loc[vines.variety == "Prosecco"]
 prosecco.reset_index
 
 #step 2
 #a
 df1 = prosecco.loc[(prosecco['points']>90), ['price','title', 'points']]
-df2 = prosecco.loc[(prosecco['points']>84), ['price','title', 'points']]
-df3 = prosecco.loc[(prosecco['points']>=84) & (prosecco['points']<=90), ['price','title', 'points']]
+
+df2 = (prosecco.loc[(prosecco['points']<84), ['price','title', 'points']])
+df2_sorted = np.sort(df2.points)[::-1]
+
+df3 = (prosecco.loc[(prosecco['points']>=84) & (prosecco['points']<=90), ['price','title', 'points']])
+df3_sorted = np.sort(df3.points)[::1]
+
 
 df1_rows = len(df1.index)
 df2_rows = len(df2.index)
 df3_rows = len(df3.index)
+print("Number of rows in df1: ", df1_rows)
+print("Number of rows in df2: ", df2_rows)
+print("Number of rows in df3: ", df3_rows)
+
 
 print("Number of filtered dataframes, df1, df2, df2 is equal to number of rows in prosecco df: " ,  len(prosecco.index) == (df1_rows + df2_rows + df3_rows) )
 
-#Step3
-df1["name_length"] = df1['title'].str.len()
-df2["name_length"] = df2['title'].str.len()
-df3["name_length"] = df3['title'].str.len()
 
-#Exercise 2 (The ramen king)
+prosecco['title_character_len'] = prosecco['title'].apply(lambda x: np.sum([len(y) for y in x]))
+print("Average number of characters in wine title (including white spaces): ", prosecco['title'].apply(lambda x: np.mean([len(y) for y in x])))
+
+ 
+
+    #Exercise 2 (The ramen king)
 ramen = pd.read_csv("ramen-ratings.csv") 
-summary_country= ramen.groupby(['Country']).count()
+ramen.drop(index=ramen[ramen['Stars'] == 'Unrated'].index, inplace=True)
+ramen['Stars'] = ramen['Stars'].astype(float)
+ramen_new_stars =  pd.DataFrame(ramen.groupby(['Country'])['Stars'].mean())
+
+ramen_new_stars = ramen_new_stars.rename(columns={"Stars": "mean"})
+ramen_new_stars['q25'] = ramen_new_stars['mean'].quantile([0.25])
+ramen_new_stars['q75'] = ramen_new_stars['mean'].quantile([0.75])
+ramen_new_stars = pd.DataFrame(ramen_new_stars)
+ramen_new_stars = ramen_new_stars.sort_values(by='mean', ascending=False)
+print("The best ramen has Brazil")
+
+
+ramen.groupby(['Country', 'Style'])
+summary_country = ramen.groupby(['Country']).count()
+summary_country_style = ramen.groupby(['Country', 'Style']).count()
 norm = ramen.groupby(['Country', 'Style']).apply(lambda x: x['Review #']/x['Review #'].sum())
+
+
 
 #Exercise 3
 orders = pd.read_csv("orders.csv") 
@@ -67,7 +96,6 @@ points = df.gender.unique()
 
 df['gender'] = df['gender'].str.replace('FEMALE','F')
 df['gender'] = df['gender'].str.replace('MALE','M')
-
 df['gender'] = df['gender'].apply(lambda x:x.strip() )
 
 statistikk = df.groupby(['gender'])['item_count'].mean()
