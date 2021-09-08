@@ -1,0 +1,157 @@
+---
+title: "Exercise Sheet 2 – Probability and Statistics"
+date: "08/09/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exercise 1 
+We roll a fair dice three times. What is the probability that two
+even numbers won’t appear in consecutive rolls?
+
+
+
+## Exercise 2
+
+All possible combinations for 4 babys: _  _ _  _ = 2 2 2 2 = $2^4$	= 16
+We can have:
+
+
+Posibilities
+
+- GGBB
+- BBGG
+- BGGB
+- GBBG
+- GBGB
+- BGBG
+
+Thus:
+Probability: $\frac{6}{16}$ = $\frac{3}{8}$ = **0.375**
+
+## Exercise 3 
+In a family with 3 children, of whom at least one is a girl, what is the probability that the family has at least 2 daughters?
+
+All possible combinations when boy is defined B _ _ = B 2 2 = $2^2$ = 4 possibilities
+
+
+Posibilities:
+
+- BB 
+- GG
+- BG
+- GB 
+Thus:
+Probability = $\frac{3}{4}$ = **0.75**
+
+## Exercise 4
+
+Exercise 4 If A, B are events in sample space S such that P(A) = P(B|A) =
+0.3 and P(A|B) = 0.6, what is the value of P(B)?
+
+
+P(A|B) = P(B|A) $\cdot$ P(A) / P(B)
+
+0.6 = 0.3 $\cdot$ 0.3 / P(B)
+
+0.6 = 0.09 / P(B)
+
+P(B) = 0.09/0.6
+
+P(B) = 0.15
+
+## Exercise 5 
+Almost 10% of all root canal therapies fail. Let X denote the probability variable of number of fails in 4 attempts at root canal.
+
+
+**p** = Probability that root canal fails = 0.1
+
+**n** = numbers of attempts = 4
+
+
+Attempts are independent so we can use binominal distribution.
+
+\
+\
+1. Write the probability distribution function of the variable X
+
+\
+**P (X)** =  **$\frac{n!}{x!(n-x)}$$p^{x}$ $(1-p)^{n-x}$** 
+
+P(X) =  $\frac{4!}{x!(4-x)}$$0.1^{x}$ $(1-0.1)^{4-x}$ 
+
+\
+2. What is the probability that at least one attempt is successful?
+\
+This probability that at zero attempt of root canal fails.
+
+\
+P(X = 0)  =  $\frac{4!}{0!(4-0)}$$0.1^{0}$ $(1-0.1)^{4-0}$ = $0.9^{4}$ = 0.65
+
+P (X = 0) = 0.65
+
+\
+3. How many successful therapies are expected in 20 attempts?
+
+**Succesful terapies in 20 attempts** = n $\cdot$ (1-p) = 20 $\cdot$ 0.9 = 18
+
+## Exercise 6
+If we have three identical boxes such that the first box contains three white pins and five black pins, the second box contains four white and four black pins, and the third box contains six white and two black pins. If we take two pins of the opposite color from a selected box, what is the probability that the second box is chosen?
+
+\
+We have boxes:
+\
+
+- B1 = {3W, 5B}
+- B2 = {4W, 4B}
+- B3 = {6W, 2B}
+
+\
+P(B1) = P(B2) = P(B3)
+
+\
+Let E1, E2 and E3 be the event that a ball is chosen from a box B1, B2 and B3 respectively.
+
+\
+Case white ball EW
+
+P(E1) = P(E2) = P(E3) = 1/3
+
+\
+P(EW|E1) = $\frac{3}{8}$, P(EW|E2) = $\frac{4}{8}$, P(EW|E3) = $\frac{6}{8}$
+
+\
+\
+Case black ball EB
+
+P(E1) = P(E2) = P(E3) = $\frac{1}{3}$
+
+P(EB|E1) = $\frac{5}{8}$, P(EB|E2) =$\frac{4}{8}$, P(EB|E3) = $\frac{2}{8}$
+
+\
+\
+**Now by Bayes` Theorem for white**
+
+
+P(E2/EW) = P(E2) $\cdot$ P(EW|E2) / P(E1) $\cdot$ P(EW|E1) +  P(E2)$\cdot$P(EW|E2) + P(E3) $\cdot$ P(EW|E3)
+
+P(E2/EW) =  (1/3 $\cdot$ 4/8) / (1/3 $\cdot$ 3/8) + (1/3 $\cdot$ 4/8) +  (1/3 $\cdot$ 6/8) = 0.19
+
+
+
+
+\
+**Now by Bayes` Theorem for black**
+
+
+P(E2/EB) = P(E2) $\cdot$ P(EB|E2) / P(E1) $\cdot$ P(EB|E1) +  P(E2)$\cdot$P(EB|E2) + P(E3) $\cdot$ P(EB|E3)
+
+P(E2/EB) =  (1/3 $\cdot$ 4/8) / (1/3 $\cdot$ 5/8) + (1/3 $\cdot$ 4/3) +  (1/3 $\cdot$ 2/8) = 0.21
+
+\
+To get to know if two pins of the opposite color from a selected boxwe have to multiply probabilities thus:
+P(EW|E2 & EB|E2) = 0.19 * 0.21 = **0.039**
+
