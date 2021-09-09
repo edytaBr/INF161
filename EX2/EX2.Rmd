@@ -163,9 +163,20 @@ P(EW|E2 & EB|E2) = 0.19 * 0.21 = **0.039**
 
 
 ## Exercise 7
-Our set B can be written as the union of two disjoint sets A and $A^c\bigcap B$.
+**Theory**
 
-So we can have P(A) + P($A^{c}$ n B) = P(B) -> P(A) $\le$ P(B) since A($A^c\bigcap B$)$\ge$ 0.
+1. The probability P of event E is described as P(E) =  P(E) $\ge$ 0; where 
+2.  P( $\emptyset$) = 1;
+
+We start with:
+
+- A $\cup$ B = (B \ A) $\cup$ A 
+- (B \ A) $\cap$ A = $\emptyset$
+- P(A $\cup$ B) = P(B \ A) + P(A)
+- A $\cup$ B = B  then  P(B) = P(B \ A) + P(A)
+- From theory 1 =  P(B \ A) $\ge$ 0, and we canconclude that
+P(B) $\ge$ P(A)
+
 
 ## Exercise 8
 
