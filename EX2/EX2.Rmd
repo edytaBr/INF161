@@ -174,7 +174,7 @@ We start with:
 - (B \ A) $\cap$ A = $\emptyset$
 - P(A $\cup$ B) = P(B \ A) + P(A)
 - A $\cup$ B = B  then  P(B) = P(B \ A) + P(A)
-- From theory 1 =  P(B \ A) $\ge$ 0, and we canconclude that
+- From theory 1 =  P(B \ A) $\ge$ 0, and we can conclude that
 P(B) $\ge$ P(A)
 
 
@@ -193,3 +193,138 @@ Sorted sample from probability distribution: [1, 5, 18, 19, 21, 23, 23, 30, 32, 
 - **Standard deviation** = 25.595639894505382
 - **95% confidence interval** = (37.07576432247458, 56.19090234419208)
 - **90% confidence interval** = (38.69313753342548, 54.57352913324119)
+
+## Exercise 8
+**Theory**
+
+1. The probability P of event E is described as P(E) =  P(E) $\ge$ 0; where 
+2.  P( $\emptyset$) = 1;
+
+We start with:
+
+- A $\cup$ B = (B \ A) $\cup$ A 
+- (B \ A) $\cap$ A = $\emptyset$
+- P(A $\cup$ B) = P(B \ A) + P(A)
+- A $\cup$ B = B  then  P(B) = P(B \ A) + P(A)
+- From theory 1 =  P(B \ A) $\ge$ 0, and we can conclude that
+P(B) $\ge$ P(A)
+
+## Exercise 9
+```python
+import numpy as np
+import matplotlib.pyplot as plt  # To visualize
+import pandas as pd  # To read data
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+```
+
+
+```python
+df = pd.read_csv ('Real estate.csv')
+```
+
+
+```python
+#print (df)
+
+df.describe()
+
+#Not that not all columns give meaning to summary
+
+#summary table
+
+summary = []
+
+columns = df.columns.values.tolist()
+
+column_names = ["Column", "Mean", "Median", "Quantile 75", "Variance", "SD"]
+summary = pd.DataFrame(columns = column_names)
+summary['Column'] = columns
+
+for x in range(df.shape[1]):
+    data = (df.iloc[:, [x]])
+    summary['Mean'][x] = (data.mean()[0])
+    summary['Median'][x] = (data.median()[0])
+    summary['Quantile 75'][x]= (data.quantile(.75)[0])
+    summary['Variance'][x] = (data.var()[0])
+    summary['SD'][x] = (data.std()[0])
+    
+
+```
+
+
+```python
+    print(summary)
+```
+
+                                       Column     Mean   Median Quantile 75  \
+    0                                      No    207.5    207.5      310.75   
+    1                     X1 transaction date  2013.15  2013.17     2013.42   
+    2                            X2 house age  17.7126     16.1       28.15   
+    3  X3 distance to the nearest MRT station  1083.89  492.231     1454.28   
+    4         X4 number of convenience stores   4.0942        4           6   
+    5                             X5 latitude   24.969  24.9711     24.9775   
+    6                            X6 longitude  121.533  121.539     121.543   
+    7              Y house price of unit area  37.9802    38.45        46.6   
+    
+          Variance         SD  
+    0      14317.5    119.656  
+    1    0.0795055   0.281967  
+    2      129.789    11.3925  
+    3  1.59292e+06    1262.11  
+    4      8.67633    2.94556  
+    5  0.000154013  0.0124102  
+    6  0.000235536  0.0153472  
+    7      185.137    13.6065  
+
+
+
+```python
+##2
+df.isnull().values.any()
+X = df.drop('Y house price of unit area',axis=1)
+y = df['Y house price of unit area']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, 
+                                                    random_state=101)
+
+#test size represent the proportion of the dataset to include in the test split. 
+#random_state Controls the shuffling applied to the data before applying the split -> simply sets seed to the random generator, so that train-test splits are always deterministic
+#without specified the random_state in the code, then every time code run(execute) a new random value 
+#is generated and the train and test datasets 
+#would have different values each time.
+
+model= LinearRegression()
+model.fit(X_train, y_train)
+LinearRegression()
+pd.DataFrame(model.coef_, X.columns, columns=['Coeficient'])
+y_pred=model.predict(X_test)
+
+
+houseToPredict = pd.DataFrame()
+prediction = {'No': 1, 'X1 transaction date': 2014, 'X2 house age': 10, 
+              'X3 distance to the nearest MRRT station' : 1200, 'X4 number of convenience stores': 5, 
+              'X5 latitude': 24.93, 
+              'X6 longitude': 121.54}
+
+prediction = {'No': 1, 'X1 transaction date': 2014, 'X2 house age': 10, 
+              'X3 distance to the nearest MRRT station' : 1200, 'X4 number of convenience stores': 5, 
+              'X5 latitude': 24.93, 
+              'X6 longitude': 121.54}
+
+
+
+
+houseToPredict = houseToPredict.append(prediction, ignore_index = True)
+predictedPrice=model.predict(houseToPredict)
+```
+
+
+```python
+print("Predicted house price (with given criteria) is ", predictedPrice)
+```
+
+    Predicted house price (with given criteria) is  [36.42730457]
+
+
+## Exercise 10
+By changing the sample size we modify the shape of histogram. For large values of sample size, the distributions of the count X and the sample proportion are approximately normal. This follows from the **Central Limit Theorem.**
