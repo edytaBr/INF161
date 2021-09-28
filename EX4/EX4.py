@@ -18,7 +18,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn import metrics
 import seaborn as sns
 from matplotlib.colors import ListedColormap
-
+import warnings
+warnings.simplefilter(action="ignore", category=FutureWarning)
 
 # %%
 # EXERCISE 1
@@ -108,8 +109,10 @@ def viz_polymonial(deg):
     y_train_poly_ = lr_poly.predict(poly_X_train)
     y_valid_poly_ = lr_poly.predict(poly_X_valid)
     plt.figure(figsize=(15, 10))
+    X = X_valid[:, 0]
+    Y = y_valid[:, 0]
 
-    sns.scatterplot(X_valid[:, 0], y_valid[:, 0], color='blue', edgecolors='blue',
+    sns.scatterplot(x=X, y=Y, color='blue', edgecolors='blue',
                     marker="X", label="Validation Data Points")
     sns.lineplot(X_valid[:, 0], y_valid_poly_[:, 0],  color='orange')
 
@@ -131,6 +134,7 @@ for i in range(0, len(degrees)):
     viz_polymonial(degrees[i])
 
 summary['Linear'] = [valid_MSE, test_MSE]
+
 
 
 # %%
@@ -174,22 +178,22 @@ def viz_classification(k):
     # Put the result into a color plot
     Z = Z.reshape(xx.shape)
     plt.figure()
-    plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
+    plt.pcolormesh(xx, yy, Z, cmap=cmap_light, shading='auto')
 
     # Plot also the training points
     plt.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_dark, edgecolors='black')
+
     plt.xlim(xx.min(), xx.max())
     plt.ylim(yy.min(), yy.max())
-    plt.title('-NN classification of your dataset for k = ' + str(k))
+    plt.title('NN classification of your dataset for k = ' + str(k))
     plt.xlabel('sepal length (cm)')
     plt.ylabel('sepal width (cm)')
-    plt.legend(bbox_to_anchor=(1, 0.8, 0.3, 0.2),
-               loc='upper left', facecolor='lavender')
     return
 
 
 for i in range(0, len(k)):
     viz_classification(k[i])
+
 
 plt.figure()
 plt.subplots_adjust(left=0.1)
