@@ -6,6 +6,7 @@ Created on Fri Sep 24 17:03:10 2021
 @author: edyta
 """
 
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import PolynomialFeatures
 import pandas as pd
 import numpy as np
@@ -14,6 +15,9 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
+import seaborn as sns
+from matplotlib.colors import ListedColormap
+
 
 # %%
 # EXERCISE 1
@@ -35,7 +39,7 @@ X_train, X_rem, y_train, y_rem = train_test_split(x, y, train_size=0.6)
 # we have to define valid_size=0.5 (that is 50% of remaining data)
 test_size = 0.5
 X_valid, X_test, y_valid, y_test = train_test_split(
-    X_rem, y_rem, test_size=0.5, random_state=10)
+    X_rem, y_rem, test_size=0.5, random_state=20)
 
 # Fit the model over the training dataset
 model = LinearRegression()
@@ -81,50 +85,43 @@ valid_MSE = metrics.mean_squared_error(y_valid, y_pred_valid)
 # Importing the dataset
 # Importing the dataset
 
-
-X = data.iloc[:, 0].values
-y = data.iloc[:, 1].values
-
-X = np.array(X).reshape((-1, 1))
-
-
 plt.style.use('ggplot')
 df = pd.DataFrame()
+degrees = ([2, 5, 10, 20, 25])
+
 summary = pd.DataFrame()
-summary['index name'] = ["Valid", "Test"]
+summary['index name'] = ["Validation", "Train"]
 summary = pd.DataFrame(summary.set_index('index name'))
 
 # Visualizing the Polymonial Regression results
 
 
+X_train = np.array(X_train).reshape(-1, 1)
+X_valid = np.array(X_valid).reshape(-1, 1)
+
+
 def viz_polymonial(deg):
-    fig, ax = plt.subplots(figsize=(8, 8))
+    poly_X_train = PolynomialFeatures(deg).fit_transform(X_train)
+    poly_X_valid = PolynomialFeatures(deg).fit_transform(X_valid)
+    lr_poly = LinearRegression().fit(poly_X_train, y_train)
+    y_train_poly_ = lr_poly.predict(poly_X_train)
+    y_valid_poly_ = lr_poly.predict(poly_X_valid)
+    plt.figure(figsize=(15, 10))
 
-    fig.subplots_adjust(top=0.885,
-                        bottom=0.11,
-                        left=0.11,
-                        right=0.815,
-                        hspace=0.18,
-                        wspace=0.2)
-    poly_reg = PolynomialFeatures(degree=deg)
-    X_poly = poly_reg.fit_transform(X)
-    pol_reg = LinearRegression()
-    pol_reg.fit(X_poly, y)
-    df[str(deg) + " Validation"] = pol_reg.predict(poly_reg.fit_transform(X_valid))
-    df[str(deg) + " Test"] = pol_reg.predict(poly_reg.fit_transform(X_test))
-    aaa= metrics.mean_squared_error(y_test, df[str(deg) + " Validation"])
-    summary[str(deg) + " MSE"] = [metrics.mean_squared_error(y_valid, pol_reg.predict(poly_reg.fit_transform(y_valid))), metrics.mean_squared_error(y_test, pol_reg.predict(poly_reg.fit_transform(y_test)))]
+    sns.scatterplot(X_valid[:, 0], y_valid[:, 0], color='blue', edgecolors='blue',
+                    marker="X", label="Validation Data Points")
+    sns.lineplot(X_valid[:, 0], y_valid_poly_[:, 0],  color='orange')
 
-    plt.scatter(X_valid, y_valid, color='lightblue', edgecolors='blue',
-                marker="X", label="Validation Data Points")  # plot results on validation
-    plt.plot(X, pol_reg.predict(poly_reg.fit_transform(X)), color='orange')
+    # ERROR
+    summary[str(deg) + " MSE"] = [metrics.mean_squared_error(y_valid, y_valid_poly_),
+                                  metrics.mean_squared_error(y_train, y_train_poly_)]
     plt.title('Polynominal Regression of degree ' + str(deg))
     plt.xlabel('X')
     plt.ylabel('Y ')
     plt.legend(bbox_to_anchor=(1, 0.8, 0.3, 0.2),
                loc='upper left', facecolor='lavender')
     plt.show()
-    return aaa
+    return
 
 
 degrees = ([2, 5, 10, 20, 25])
@@ -133,13 +130,56 @@ for i in range(0, len(degrees)):
     viz_polymonial(degrees[i])
 
 summary['Linear'] = [valid_MSE, test_MSE]
+
+
 # %%
-#Compute the Mean Square Error on training and validation datasets for
-#each degree and compare it to simple linear model. Does any of your
-#models overfit or underfit?
-df.(columns=['index name', 'col1',  'col2']).set_index('index name')
 
 
+# Visualization:
+cmap_light = ListedColormap(['#EB98FD', '#66C5E3', '#F3FB95'])
+cmap_dark = ListedColormap(['#8E44AD', '#1B85C5', '#F1EE32'])
+k = [1, 5, 10, 20, 30]
 
 
+iris = datasets.load_iris()
+X = iris.data[:, :2]  # we only take the first two features.
+Y = iris.target
+h = 0.02
 
+
+# Split data
+X_train, X_rem, y_train, y_rem = train_test_split(X, Y, train_size=0.6)
+
+test_size = 0.5
+X_valid, X_test, y_valid, y_test = train_test_split(
+    X_rem, y_rem, test_size=0.5, random_state=20)
+
+
+def viz_classification(k):
+    model = KNeighborsClassifier(n_neighbors=k)
+    model.fit(X_train, y_train)
+
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                         np.arange(y_min, y_max, h))
+    Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+
+    # Put the result into a color plot
+    Z = Z.reshape(xx.shape)
+    plt.figure()
+    plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
+
+    # Plot also the training points
+    plt.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_dark, edgecolors='black')
+    plt.xlim(xx.min(), xx.max())
+    plt.ylim(yy.min(), yy.max())
+    plt.title('-NN classification of your dataset for k = ' + str(k))
+    plt.xlabel('sepal length (cm)')
+    plt.ylabel('sepal width (cm)')
+    plt.legend(bbox_to_anchor=(1, 0.8, 0.3, 0.2),
+               loc='upper left', facecolor='lavender')
+    return
+
+for i in range(0, len(k)):
+   viz_classification(k[i])
