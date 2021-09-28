@@ -6,6 +6,7 @@ Created on Fri Sep 24 17:03:10 2021
 @author: edyta
 """
 
+from sklearn.metrics import mean_squared_error as MSE, accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.preprocessing import PolynomialFeatures
 import pandas as pd
@@ -145,7 +146,9 @@ iris = datasets.load_iris()
 X = iris.data[:, :2]  # we only take the first two features.
 Y = iris.target
 h = 0.02
-
+summary = pd.DataFrame()
+summary['index name'] = ["Validation", "Train", "K"]
+summary = pd.DataFrame(summary.set_index('index name'))
 
 # Split data
 X_train, X_rem, y_train, y_rem = train_test_split(X, Y, train_size=0.6)
@@ -164,6 +167,9 @@ def viz_classification(k):
     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                          np.arange(y_min, y_max, h))
     Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
+    valid_score = accuracy_score(y_valid, model.predict(X_valid))
+    train_score = accuracy_score(y_train, model.predict(X_train))
+    summary[str(k) + " Accurancy Score"] = [valid_score, train_score, k]
 
     # Put the result into a color plot
     Z = Z.reshape(xx.shape)
@@ -181,5 +187,15 @@ def viz_classification(k):
                loc='upper left', facecolor='lavender')
     return
 
+
 for i in range(0, len(k)):
-   viz_classification(k[i])
+    viz_classification(k[i])
+
+plt.figure()
+plt.subplots_adjust(left=0.1)
+plt.plot(summary.iloc[2], summary.iloc[1], label="Validation")
+plt.plot(summary.iloc[2], summary.iloc[0], label="Train")
+plt.title("Change in as a function of different K")
+
+plt.legend(loc='best', facecolor='lavender')
+plt.show()
