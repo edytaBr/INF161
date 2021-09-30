@@ -85,7 +85,6 @@ valid_MSE = metrics.mean_squared_error(y_valid, y_pred_valid)
 
 
 # Importing the dataset
-# Importing the dataset
 
 plt.style.use('ggplot')
 df = pd.DataFrame()
@@ -95,19 +94,16 @@ summary = pd.DataFrame()
 summary['index name'] = ["Validation", "Train"]
 summary = pd.DataFrame(summary.set_index('index name'))
 
-# Visualizing the Polymonial Regression results
-
-
 X_train = np.array(X_train).reshape(-1, 1)
 X_valid = np.array(X_valid).reshape(-1, 1)
 
-
+# Visualizing the Polymonial Regression results
 def viz_polymonial(deg):
     poly_X_train = PolynomialFeatures(deg).fit_transform(X_train)
     poly_X_valid = PolynomialFeatures(deg).fit_transform(X_valid)
-    lr_poly = LinearRegression().fit(poly_X_train, y_train)
-    y_train_poly_ = lr_poly.predict(poly_X_train)
-    y_valid_poly_ = lr_poly.predict(poly_X_valid)
+    poly = LinearRegression().fit(poly_X_train, y_train)
+    y_train_poly_ = poly.predict(poly_X_train)
+    y_valid_poly_ = poly.predict(poly_X_valid)
     plt.figure(figsize=(15, 10))
     X = X_valid[:, 0]
     Y = y_valid[:, 0]
@@ -135,7 +131,7 @@ for i in range(0, len(degrees)):
 
 summary['Linear'] = [valid_MSE, test_MSE]
 
-
+# %%
 
 # %%
 
@@ -200,6 +196,11 @@ plt.subplots_adjust(left=0.1)
 plt.plot(summary.iloc[2], summary.iloc[1], label="Validation")
 plt.plot(summary.iloc[2], summary.iloc[0], label="Train")
 plt.title("Change in as a function of different K")
-
+plt.ylabel('Accuracy score')
+plt.xlabel('K')
 plt.legend(loc='best', facecolor='lavender')
 plt.show()
+
+# %%
+
+
