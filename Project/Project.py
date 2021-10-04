@@ -36,46 +36,74 @@ games19.dropna(subset = ["Score"], inplace=True)
 #Scores to get it as integer in separate columns
 games17[['ScoreHome', 'ScoreAway']] = games17['Score'].str.split('–', 1, expand=True)
 games17[['ScoreHome', 'ScoreAway']]= games17[['ScoreHome', 'ScoreAway']].astype(int)
+games17['Season']= '2017'
 
 games18[['ScoreHome', 'ScoreAway']] = games18['Score'].str.split('–', 1, expand=True)
 games18[['ScoreHome', 'ScoreAway']] = games18[['ScoreHome', 'ScoreAway']].astype(int)
+games18['Season']= '2018'
 
 games19[['ScoreHome', 'ScoreAway']] = games19['Score'].str.split('–', 1, expand=True)
 games19[['ScoreHome', 'ScoreAway']]= games19[['ScoreHome', 'ScoreAway']].astype(int)
+games19['Season']= '2019'
+
 
 
 #Clean unused columns
-games17 = games17.drop(columns=['Notes', 'Match Report', 'Score'])
-games18 = games18.drop(columns=['Notes', 'Match Report', 'Score'])
-games19 = games19.drop(columns=['Notes', 'Match Report', 'Score'])
-
-games17_grouped = games17.groupby(by=["Home"]).sum()
-games18_grouped = games18.groupby(by=["Home"]).sum()
-games19_grouped = games19.groupby(by=["Home"]).sum()
-
-
-games17_grouped_mean = games17.groupby(by=["Home"]).mean()
-games18_grouped_mean = games18.groupby(by=["Home"]).mean()
-games19_grouped_mean = games19.groupby(by=["Home"]).mean()
-
-
-games_grouped = pd.DataFrame({
-    'Scores Home 17': games17_grouped['ScoreHome'],
-    'Scores Away 17': games17_grouped['ScoreAway'],
-    'Scores Home 18': games18_grouped['ScoreHome'],
-    'Scores Away 18': games18_grouped['ScoreAway'],
-    'Scores Home 19': games19_grouped['ScoreHome'],
-    'Scores Away 19': games19_grouped['ScoreAway'],
-    'Scores mean Home 17': games17_grouped_mean['ScoreHome'],
-    'Scores mean Away 17': games17_grouped_mean['ScoreAway'],
-    'Scores mean Home 18': games18_grouped_mean['ScoreHome'],
-    'Scores mean Away 18': games18_grouped_mean['ScoreAway'],
-    'Scores mean Home 19': games19_grouped_mean['ScoreHome'],
-    'Scores mean Away 19': games19_grouped_mean['ScoreAway']
-})
+games17 = games17.drop(columns=['Notes', 'Match Report', 'Score', 'Referee', 'Venue', 'Date', 'Day', 'Time'])
+games18 = games18.drop(columns=['Notes', 'Match Report', 'Score', 'Referee', 'Venue', 'Date', 'Day', 'Time'])
+games19 = games19.drop(columns=['Notes', 'Match Report', 'Score', 'Round', 'Referee', 'Venue', 'Date', 'Day', 'Time'])
 
 
 
+#join dataframes:
+data =games17.append(games18, ignore_index=True)
+data = data.append(games19, ignore_index=True)
+
+
+
+data_grouped  = data.rename(columns={'Home': 'Squad'})
+
+
+games = data_grouped.groupby(['Season', 'Squad']).mean()
+
+
+
+
+
+
+
+
+# games17_grouped = games17.groupby(by=["Home"]).sum()
+# games18_grouped = games18.groupby(by=["Home"]).sum()
+# games19_grouped = games19.groupby(by=["Home"]).sum()
+
+
+# games17_grouped_mean = games17.groupby(by=["Home"]).mean()
+# games18_grouped_mean = games18.groupby(by=["Home"]).mean()
+# games19_grouped_mean = games19.groupby(by=["Home"]).mean()
+
+
+# games_grouped = pd.DataFrame({
+#     'Scores Home 17': games17_grouped['ScoreHome'],
+#     'Scores Away 17': games17_grouped['ScoreAway'],
+#     'Scores Home 18': games18_grouped['ScoreHome'],
+#     'Scores Away 18': games18_grouped['ScoreAway'],
+#     'Scores Home 19': games19_grouped['ScoreHome'],
+#     'Scores Away 19': games19_grouped['ScoreAway'],
+#     'Scores mean Home 17': games17_grouped_mean['ScoreHome'],
+#     'Scores mean Away 17': games17_grouped_mean['ScoreAway'],
+#     'Scores mean Home 18': games18_grouped_mean['ScoreHome'],
+#     'Scores mean Away 18': games18_grouped_mean['ScoreAway'],
+#     'Scores mean Home 19': games19_grouped_mean['ScoreHome'],
+#     'Scores mean Away 19': games19_grouped_mean['ScoreAway']
+# })
+
+
+
+
+
+
+# %%
 
 fig0a = go.Figure(data=[
     go.Bar(name='2017',x=games_grouped.index, y=games_grouped['Scores Away 17']),
@@ -145,6 +173,58 @@ playerStats17['Nation'] = playerStats17['Nation'].str[-3:]
 playerStats18['Nation'] = playerStats18['Nation'].str[-3:]
 playerStats19['Nation'] = playerStats19['Nation'].str[-3:]
 playerStats20['Nation'] = playerStats20['Nation'].str[-3:]
+playerStats17['Season']= '2017'
+playerStats18['Season']= '2018'
+playerStats19['Season']= '2019'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# %%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 playerStats17['Pos'].unique()
@@ -289,6 +369,48 @@ table19[['Top Team Scorer', 'Top Team Scorer Goals']] = table19['Top Team Scorer
 #table20[['Top Team Scorer', 'Top Team Scorer Goals']] = table20['Top Team Scorer'].str.split(' - ', 1, expand=True)
 
 
+#Filter data
+table17 = table17[['Rk', 'Squad', 'GF', 'GA', 'GD', 'Pts', 'Top Team Scorer','Top Team Scorer Goals', 'Goalkeeper']]
+table18 = table18[['Rk', 'Squad', 'GF', 'GA', 'GD', 'Pts', 'Top Team Scorer','Top Team Scorer Goals', 'Goalkeeper']]
+table19 = table19[['Rk', 'Squad', 'GF', 'GA', 'GD', 'Pts', 'Top Team Scorer','Top Team Scorer Goals', 'Goalkeeper']]
+table17['Top Team Scorer Goals']= table17['Top Team Scorer Goals'].astype(int)
+table18['Top Team Scorer Goals']= table18['Top Team Scorer Goals'].astype(int)
+table19['Top Team Scorer Goals']= table19['Top Team Scorer Goals'].astype(int)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# %% 
+
 figS = px.scatter(
         table17, x="Squad", y="GF", 
         size =list(map(int, table17['Top Team Scorer Goals'])),  color=list(map(int, table17['Top Team Scorer Goals'])), 
@@ -339,8 +461,21 @@ teamStats17 = teamStats17.dropna(axis=1 , how='all').dropna(axis=0 , how='all')
 teamStats18 = teamStats18.dropna(axis=1, how='all').dropna(axis=0 , how='all')
 teamStats19 = teamStats19.dropna(axis=1, how='all').dropna(axis=0 , how='all')
 
-teamStats17 = teamStats17.iloc[:, [0, 1,2, 7, 8, 9, 10, 11, 12, 13, 14]]
-teamStats18 = teamStats18.iloc[:, [0, 1,2, 7, 8, 9, 10, 11, 12, 13, 14]]
-teamStats19 = teamStats19.iloc[:, [0, 1,2, 7, 8, 9, 10, 11, 12, 13, 14]]
-#teamStats20 = teamStats18.iloc[:, [0, 1,2, 7, 8, 9, 10, 11, 12, 13, 14]]
+#%%
+
+teamStats17['Season']= '2017'
+teamStats18['Season']= '2018'
+teamStats19['Season']= '2019'
+
+teamStats17 = teamStats17[['Squad', 'Age', 'Gls', 'G-PK', 'PK', 'CrdY', 'CrdR', 'Season']]
+teamStats18 = teamStats18[['Squad', 'Age', 'Gls', 'G-PK', 'PK', 'CrdY', 'CrdR', 'Season']]
+teamStats19 = teamStats19[['Squad', 'Age', 'Gls', 'G-PK', 'PK', 'CrdY', 'CrdR', 'Season']]
+
+
+teamStats =teamStats17.append(teamStats18, ignore_index=True)
+teamStats = teamStats.append(teamStats19, ignore_index=True)
+
+
+
+data = games.merge(teamStats,  on=['Season', 'Squad'])
 
