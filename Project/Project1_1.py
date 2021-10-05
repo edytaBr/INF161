@@ -158,18 +158,33 @@ fig_2 = px.scatter(
         hover_data=['Season'])
 
 fig_2.update_layout(title_text='Goals for teams in 2017-2019 with goals scored by the best scorer in the team (color)')
-fig_2.show()
+#fig_2.show()
 
 correlation = v.iloc[:, [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]].corr()
 fig_3 = go.Figure(data=go.Heatmap(z=correlation, x=correlation.columns, y =correlation.columns))
 fig_3.update_layout(title_text='Correlation plot for particular statistic for teams 2017 example')
-fig_3.show()
+#fig_3.show()
 
 number = preprocessing.LabelEncoder()
 data_model['SquadT'] = number.fit_transform(data_model.Squad)
 data_model['GoalkeeperT'] = number.fit_transform(data_model.Goalkeeper)
 data_model['TopScorrerT'] = number.fit_transform(data_model['Top Team Scorer'])
-data_model = data_model.groupby(['Squad']).mean() 
+
+test = pd.DataFrame()
+
+test[['ScoreHome', 'ScoreAway']] = data_model.groupby(['Squad'])[['ScoreHome', 'ScoreAway']].median()
+test[['Age', 'Goals90min',
+       'NonPenaltyGoals', 'PenaltyKicksMade', 'YellowCards', 'RedCards',
+       'RankingPlace', 'GoalFor', 'GoalAgainst', 'GoalDifference', 'Pts',
+       'Top Team Scorer Goals']] = data_model.groupby(['Squad'])[['Age', 'Goals90min',
+       'NonPenaltyGoals', 'PenaltyKicksMade', 'YellowCards', 'RedCards',
+       'RankingPlace', 'GoalFor', 'GoalAgainst', 'GoalDifference', 'Pts',
+       'Top Team Scorer Goals']].mean()
+    
+test['SquadT'] = data_model.groupby(['Squad'])['SquadT'].median()
+
+
+data_model = test
 data_model.to_csv(r'/home/edyta/git/INF161/Project/model_data.csv')
 
 # Vizualization
