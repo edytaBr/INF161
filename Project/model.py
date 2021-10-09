@@ -7,16 +7,15 @@ Created on Thu Oct  7 16:47:28 2021
 """
 
 # linear regression for multioutput regression
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, ElasticNet
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
-from sklearn import metrics
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler
-
-
+from sklearn.metrics import mean_squared_error
+import numpy as np
 
 data = pd.read_csv('data.csv')
 # Simply drop teams that were not in specific season
@@ -42,24 +41,14 @@ X_train, X_rem, y_train, y_rem = train_test_split(X, y, train_size=0.6)
 
 test_size = 0.5
 X_valid, X_test, y_valid, y_test = train_test_split(
-    X_rem, y_rem, test_size=0.5, random_state=20)
+    X_rem, y_rem, test_size=0.5)
 
 
 model = LinearRegression()
-model.fit(X_train, y_train)
-
 model_KN = KNeighborsRegressor()
-model_KN.fit(X_train, y_train)
-
 model_T = DecisionTreeRegressor()
-model_T.fit(X_train, y_train)
-
-
-
-# Instantiate model with 1000 decision trees
 model_RF = RandomForestRegressor(n_estimators = 1000, random_state = 42)
-# Train the model on training data
-model_RF.fit(X_train, y_train);
+en = ElasticNet()
 
 
 
@@ -108,6 +97,54 @@ get_data = data[['Home', 'Away', 'NonPenaltyGoalsHome', 'AgeHome', 'Goals90minHo
                  'GoalAgainstAway', 'GoalDifferenceAway', 'PointsAway',
                  'TopTeamScorerGoalsAway', 'HomeT', 'AwayT', 'Season']]
 
+
+
+
+
+
+def run_model_calc_errors(model,X_train,y_train,X_val,y_val,X_test,y_test):
+
+    model.fit(X=X_train, y=y_train)
+
+    y_pred_train=model.predict(X_train)
+    MSE_train=mean_squared_error(y_train, y_pred_train)
+
+    y_pred_val=model.predict(X_val)
+    MSE_val=mean_squared_error(y_val, y_pred_val)
+  
+
+    y_pred_test=model.predict(X_test)
+    MSE_test=mean_squared_error(y_test, y_pred_test)
+    RMSE=np.sqrt(MSE_test)
+    
+    return [MSE_train, MSE_val, RMSE]
+
+models = [model, model_KN, model_RF, model_T,en]
+
+
+error = pd.DataFrame(columns=['MSE_Train', 'MSE_Valid', 'RMSE_Test'])
+for model in models:
+    res = run_model_calc_errors(model, X_train, y_train, X_valid, y_valid, X_test, y_test)
+    error = error.append({'MSE_Train': res[0],'MSE_Valid': res[1], 'RMSE_Test': res[2]}, ignore_index=True) 
+
+
+
+
+
+error.rename(index={0:'LinearRegression',
+                    1:'KNeighborsRegressor',
+                    2: 'RandomForestRegressor',
+                    3: 'DecisionTreeRegressor',
+                    4: 'ElasticNet' },inplace=True)
+
+
+
+
+
+
+#CSV
+
+
 for ind in test.index:
     get_h = (test['Home'][ind])
     get_a = (test['Away'][ind])
@@ -132,11 +169,6 @@ for ind in test.index:
     y_pred_RF_csv_home.append(round(pred4[0][0]))    
     y_pred_RF_csv_away.append(round(pred4[0][1]))
 
-
-
-
-#Create csv
-   
 test['HomeScore_tree'] = y_pred_T_csv_home
 test['AwayScore_tree'] = y_pred_T_csv_away
 
@@ -153,36 +185,4 @@ test.to_csv(r'/home/edyta/git/INF161/Project/results_data.csv')
 
 
 
-# compute the Mean Square Error on both datasets.
-y_pred_test = model.predict(X_test)
-y_pred_valid = model.predict(X_valid)
-
-test_MSE1 = metrics.mean_squared_error(y_test, y_pred_test, squared=False)
-valid_MSE1 = metrics.mean_squared_error(y_valid, y_pred_valid, squared=False)
-
-y_pred_test2 = model_KN.predict(X_test)
-y_pred_valid2 = model_KN.predict(X_valid)
-
-test_MSE2 = metrics.mean_squared_error(y_test, y_pred_test2, squared=False)
-valid_MSE2 = metrics.mean_squared_error(y_valid, y_pred_valid2, squared=False)
-
-y_pred_test3 = model_T.predict(X_test)
-y_pred_valid3 = model_T.predict(X_valid)
-
-test_MSE3 = metrics.mean_squared_error(y_test, y_pred_test3, squared=False)
-valid_MSE3 = metrics.mean_squared_error(y_valid, y_pred_valid3, squared=False)
-
-y_pred_test4 = model_RF.predict(X_test)
-y_pred_valid4 = model_RF.predict(X_valid)
-
-test_MSE4 = metrics.mean_squared_error(y_test, y_pred_test4, squared=False)
-valid_MSE4 = metrics.mean_squared_error(y_valid, y_pred_valid4, squared=False)
-
-error = pd.DataFrame(columns = ['Linear model', 'KNeighborsRegressor', 'DecisionTreeRegressor', 'Random Forest'])
-error['Linear model'] = [test_MSE1, valid_MSE1]
-error['KNeighborsRegressor'] = [test_MSE2, valid_MSE2]
-error['DecisionTreeRegressor'] = [test_MSE3, valid_MSE3]
-error['Random Forest'] = [test_MSE4, valid_MSE4]
-
-error.rename(index={0:'Test', 1:'Validation'},inplace=True)
 
