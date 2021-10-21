@@ -7,15 +7,20 @@ Created on Thu Oct 21 11:07:29 2021
 """
 
 from flask import Flask, render_template
-import pandas as pd
+
 app = Flask(__name__)
 @app.route("/")
 
 def template():
-   data = pd.read_csv("results.csv") 
-   myData = data.values
-   return render_template("template.html", myData=myData)
+  return render_template("template.html")
 
+@app.route("/about")
+def about():
+  return render_template("about.html")
+
+@app.route("/home")
+def home():
+  return render_template("home.html")
 
 if __name__ == "__main__":
   app.run(debug=True)
