@@ -11,7 +11,6 @@
       <title>Flask Parent Template</title>
    </head>
 <body>
-
 <h1>INF161</h1>
 
 <div class="d1">
@@ -24,11 +23,10 @@
 
 
 
-  <div class="d2">
+<div class="d2">
 
   <div class="column1">
-  <form method="POST">
-         <select  class= "select" name="home" onchange="myFunction1()">
+  <select  class= "select" id="mySelect1" onchange="myFunction1()">
     <option value="0">Select team home:</option>
     <option value="Vålerenga">Vålerenga</option>
     <option value="Trondheims-Ørn">Trondheims-Ørn</option>
@@ -46,7 +44,7 @@
   <div class="d2">
 
   <div class="column2">
-    <select  class= "select" name="away" onchange="myFunction2()">
+  <select  class= "select" id="mySelect2" onchange="myFunction2()">
     <option value="0">Select team away:</option>
     <option value="Vålerenga">Vålerenga</option>
     <option value="Trondheims-Ørn">Trondheims-Ørn</option>
@@ -62,8 +60,6 @@
   </select>
   </div>
 </div>
- 
-  
 
 <div class="d4">
 
@@ -77,8 +73,10 @@
        <br>
        <br>
       
-       <input class="button" type=submit value=Run
-        </button>
+<form>
+ <a href="{{ url_for('template') }}" class="button1" type="button">&#11013;
+</a>
+</for>
     </form>
 </div>
 
@@ -87,9 +85,12 @@
 
 <div class="d3">
   <div class="center">
-      <h2 style="text-align:center; font-weight:100; font-size:30px;">PREDICTION</h2>
+      <h2 style="text-align:center; font-weight:100; font-size:30px;">PREDICTION DONE</h2>
 
-      <h2 style="text-align:inline; font-weight:1200; font-size:40px;"><p1 id="demo2"></p1>  :  <p1 id="demo3"></p1> </h2>
+      <h2 style="text-align:inline; font-weight:1200; font-size:40px;"><p1> {{ myData[0]}} </p1>  :  <p1> {{ myData[1]}} </p1> </h2>
+</div>
+
+</div>
 
 </body>
 </html>
