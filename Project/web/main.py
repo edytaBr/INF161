@@ -29,14 +29,17 @@ def score_send():
     model = request.form['model']
     
     for elem in data.itertuples():
-        if ((model == 'knn') and ((elem.Home == h) and (elem.Away == a))):
+        if ((model == 'knn' or model == 'randomforest' ) and (h == a)):
+            score_Home = "wrong"
+            score_Away = "input"
+        elif ((model == 'knn') and ((elem.Home == h) and (elem.Away == a))):
             score_Home = elem.HomeScore_KN
             score_Away = elem.AwayScore_KN
         elif ((model == 'randomforest') and ((elem.Home == h) and (elem.Away == a))):
             score_Home = elem.HomeScore_RF
             score_Away = elem.AwayScore_RF
             
-    return render_template("predict.html", myData = [ score_Home, score_Away])
+    return render_template("predict.html", myData = [ score_Home, score_Away, h, a])
 
 
 
