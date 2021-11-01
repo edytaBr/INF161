@@ -15,20 +15,23 @@ app = Flask(__name__)
 
 def template():
 
-   return render_template("template.html")
+   return render_template("index.html")
 
 
 
 
 @app.route('/', methods=['POST'])
 def score_send():
-    data = pd.read_csv("results.csv") 
+    data = pd.read_csv("predictions.csv") 
 
     h = request.form['home']
     a = request.form['away']
-    model = request.form['model']
+    model = request.form.get('model')
     
     for elem in data.itertuples():
+        if ((model != 'knn' and model != 'randomforest' )):
+            score_Home = "pick up"
+            score_Away = "model"
         if ((model == 'knn' or model == 'randomforest' ) and (h == a)):
             score_Home = "wrong"
             score_Away = "input"
@@ -46,4 +49,4 @@ def score_send():
 
 
 if __name__ == "__main__":
-  app.run(debug=True)
+  app.run(host="localhost", port=8080, debug=True)
