@@ -1,0 +1,118 @@
+---
+title: |
+  | 
+  |
+  |
+  |  **INF161**
+  |
+  | Exercise 5: Study Design
+  |
+
+
+date: "10/10/2021"
+output: pdf_document
+fontsize: 12pt
+
+linestretch: 1.5
+geometry: margin=2.5cm
+
+---
+\newpage
+
+# 1. Test Recommendation System
+
+## Ethical consideration:
+- If  the recommendation system works should I encourage people to watch even more movies? Is it right to send people recommendation so that they will sit in front of the screen more time.
+
+- Should I send recommendations to the kids, they are the group that should not be encouraged to spent more time in front of the screen. Kinds should not get any recommendations. What about horror movies, or tv shows that are not for kids. 
+
+## Study design:
+I should have two randomly chosen groups.
+
+- One which is using recommendation system
+- One which is not using it.  (maybe system is not working and this is just random)
+These groups should not be too small. I have to decide how many participants should I consider in my research.  I can get the most power with a 50:50 split - equal numbers of people getting the recommendation and without. They should be big enough to calculate variations in number of watched movies. 
+
+## Data:
+Record data about groups: number of movies they have watched last two months per group.
+
+## Data analyze:
+Per each group I should calculate the average of watched movies. 
+Then visualize it by histogram to distribution for one variable (films number). Then I can notice how data are distributed within particular groups. 
+
+\newpage
+
+\twocolumn
+# 2.Study and Salary
+\
+**1.Graduation year**\
+Here is scrollable list with years\
+**2.Education Level**\
+$\Box$ Master\
+$\Box$  Bachelor\
+\
+**3.Gender**\
+$\Box$ Female\
+$\Box$ Male\
+$\Box$ Rather not to say\
+\
+**5.Average Grade**\
+$\Box$ A\
+$\Box$ B\
+$\Box$ C\
+$\Box$ D\
+$\Box$ E\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+**6.Average salary during first 5 years of work**\
+$\Box$  0     - 399.000 NOK\
+$\Box$ 400 - 499.000 NOK\
+$\Box$ 500 - 599.000 NOK\
+$\Box$  600 - 699.000 NOK\
+$\Box$        >700.000 NOK\
+\
+**7. Additional Courses Code**\
+List with choices.
+Possible to delete, possible to see chosen codes with subject names.
+\
+\newpage
+
+\onecolumn
+In this questionnaire some questions are designed in the way that it will be possible to pick up the proper answer from scroll list. By doing this I want to limit the answers. This will help with further analysis since 
+all answers will be in defined database so there will be no freedom in choice for participants.
+
+## Ethical considerations:
+- Data will not contain personal information 
+- Data will be deleted after research
+- Data er sensitive so have to be stored in safe way.
+
+## Data analyze:
+1. Average grade: bar plot
+2. Box plot of salary: median, average, std. dev is presented.
+3. Education level bar plot
+4. Histogram of salary
+5. Average grade bar plot
+7. Correlation plot of each variable. It will show how data are correlated together.  
+
+# 3. Breast Cancer
+First of all the exercise description says nothing about groups. We do not know anything about group distribution, if for example one group is younger than the other, if some underlying aspects that can influence treatments. Moreover, we do not know how the groups were chosen, and if the treatment was randomized for every patient. 
+
+This is the reason why do empirical average used by Emma and Lukas does not always work. Additionally, selection bias (and other biases) often makes two empirical averages not comparable.
+In this case we are facing *Simpson Paradox* since there is a possibility that groups are biased. We have two groups of equal size, but the treatment (maybe?) was not randomly assigned. This problem is usually observed in medical experiments or in treatments compassion.
+To solve issues mentioned above we have to to ensure that there is no hidden confounders between treatment assignment and experiment outcomes. Thus we should randomize the treatment assignment for each patient. Anyways, we have to keep in minds that randomized treatment does not guarantee the reliability of empirical means for treatment comparison. \footnote{https://medium.com/criteo-engineering/how-to-compare-two-treatments-ade0753fe39f}
+
+To help Emma and Lukas I would suggest to design the treatment again so that each tested group is randomized, and treatment assignation is randomized as well. I would not rely on the obtained results right now, without having a good knowledge of the data-generating mechanism because it allows us to understand what the potential biases are and explain them.
+
+
+
